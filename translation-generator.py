@@ -1,5 +1,5 @@
 from lxml import html
-import sys, os, requests, urllib, json, datetime, xlsxwriter
+import sys, os, requests, urllib, json, datetime, xlsxwriter, math
 
 def print_log(msg, file_only):
     now = datetime.datetime.now()
@@ -28,6 +28,7 @@ def find_translation(word):
     response = requests.get(url)
     json_data = json.loads(response.text)
     print_log("Finding translation for " + word, True)
+    worksheet.write("A" + str(iteration), word)
     if json_data["data"]:
         data = json_data["data"][0]
         japanese = data["japanese"][0]
@@ -52,11 +53,13 @@ def find_translation(word):
         translation_result = translation_result.rstrip("; ")
         print_log(word + "(" + reading + ")", True)
         print_log(translation_result + "\n", True)
-        worksheet.write("A" + str(iteration), word)
         worksheet.write("B" + str(iteration), reading)
-        worksheet.write("C" + str(iteration), translation_result)            
+        worksheet.write("C" + str(iteration), translation_result)
+    else:
+        print_log("Translation not found.", True)
+        
 
-input_filestr = "input.txt"
+input_filestr = "test.txt"
 file_name = "translation-generator"
 now_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 log_dir = "logs/"
@@ -86,7 +89,8 @@ if not os.path.exists(output_dir):
 completion_val = 100
 translation_char_limit = 75
 prog_length = int(completion_val / 2)
-iteration_step = int(line_count / completion_val)
+iteration_step = int(math.ceil(line_count / completion_val))
+    
 iteration = 1
 retry_url = False
 max_retries = 5
@@ -116,7 +120,6 @@ try:
                         print_error(e, "Retrying...")
                 if num_retries == max_retries:
                     print_log("Max retries reached. Skipping...", False)
-
 
                 if iteration % iteration_step == 0:
                     progress(message, iteration, line_count, prefix = prog_prefix, suffix = prog_suffix, length = prog_length)
