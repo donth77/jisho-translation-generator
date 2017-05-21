@@ -1,0 +1,8 @@
+output/
+logs/
+*.out
+*.xlsx
+*.log
+translation-test.py
+weblio-scraper.py
+test.txt
