@@ -40,16 +40,17 @@ def find_translation(word):
             reading = ""
             print_log("Reading not found.", True)
         english_definitions = data["senses"][0]["english_definitions"]
-        total_len = 0
+        line_len = 0
         i = 0
         translation_result = ""
         if len(english_definitions) > 1:
             for defn in english_definitions:
-                if total_len >= translation_char_limit:
+                if line_len >= line_char_limit:
                      translation_result += "".join(["\n(",str(i + 1),") ",defn, "; "])
+                     line_len = 0  
                 else:
                      translation_result += "".join(["(",str(i + 1),") ",defn, "; "])
-                total_len += len(defn)
+                line_len += len(defn)
                 i += 1
             translation_result = translation_result.rstrip("; ")
         elif len(english_definitions) == 1:
@@ -90,7 +91,7 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 completion_val = 100
-translation_char_limit = 75
+line_char_limit = 75
 prog_length = int(completion_val / 2)
 iteration_step = int(math.ceil(line_count / completion_val))
     
