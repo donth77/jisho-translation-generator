@@ -59,7 +59,7 @@ def find_translation(word):
         print_log("Translation not found.", True)
         
 
-input_filestr = "test.txt"
+input_filestr = "input.txt"
 file_name = "translation-generator"
 now_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 log_dir = "logs/"
