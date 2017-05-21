@@ -43,14 +43,17 @@ def find_translation(word):
         total_len = 0
         i = 0
         translation_result = ""
-        for defn in english_definitions:
-            if total_len >= translation_char_limit:
-                 translation_result += "".join(["\n(",str(i + 1),") ",defn, "; "])
-            else:
-                 translation_result += "".join(["(",str(i + 1),") ",defn, "; "])
-            total_len += len(defn)
-            i += 1
-        translation_result = translation_result.rstrip("; ")
+        if len(english_definitions) > 1:
+            for defn in english_definitions:
+                if total_len >= translation_char_limit:
+                     translation_result += "".join(["\n(",str(i + 1),") ",defn, "; "])
+                else:
+                     translation_result += "".join(["(",str(i + 1),") ",defn, "; "])
+                total_len += len(defn)
+                i += 1
+            translation_result = translation_result.rstrip("; ")
+        elif len(english_definitions) == 1:
+            translation_result = english_definitions[0]
         print_log(word + "(" + reading + ")", True)
         print_log(translation_result + "\n", True)
         worksheet.write("B" + str(iteration), reading)
@@ -132,6 +135,3 @@ try:
 except Exception as e:
     print_error(e, "Terminating...")
     sys.exit()
-    
-
-
